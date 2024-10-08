@@ -2,35 +2,305 @@ package org.chris.rhythmGame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class Game extends JFrame {
-    private Image screenImage;
-    private Graphics screenGraphic;
+public class Game extends Thread {
 
-    private Image introBackGround;
+    private Image noteRouteLineImage = new ImageIcon(Main.class.getResource("/images/noteRouteLine.png")).getImage();
+    private Image judgementLineImage = new ImageIcon(Main.class.getResource("/images/judgement.png")).getImage();
+    private Image gameInfoImage = new ImageIcon(Main.class.getResource("/images/gameInfo.png")).getImage();
 
+    private Image noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    private Image noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
 
-    public Game() {
-        setTitle("리겜"); // FIXME: 추후에 이름 정해지면 수정
-        setSize(1280, 720);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        setLocationRelativeTo(null);
+    private String titleName;
+    private String difficulty;
+    private String musicTitle;
+    private Music gameMusic;
+    private String judgement = "";
+    private long judgementTime = 0;
 
-        setVisible(true);
+    ArrayList<Note> noteList = new ArrayList<Note>();
 
-        introBackGround = new ImageIcon("../intro_background.png").getImage();
+    public Game(String titleName, String difficulty, String musicTitle) {
+        this.titleName = titleName;
+        this.difficulty = difficulty;
+        this.musicTitle = musicTitle;
+        gameMusic = new Music(this.musicTitle, false, 1);
     }
 
-    public void paint(Graphics g) {
-        screenImage = createImage(getWidth(), getHeight());
-        screenGraphic = screenImage.getGraphics();
-        screenDraw(screenGraphic);
+    public void screenDraw(Graphics2D g) {
+        g.drawImage(noteRouteSImage, 228, 40, null);
+        g.drawImage(noteRouteDImage, 332, 40, null);
+        g.drawImage(noteRouteFImage, 436, 40, null);
+        g.drawImage(noteRouteSpace1Image, 540, 40, null);
+        g.drawImage(noteRouteSpace2Image, 640, 40, null);
+        g.drawImage(noteRouteJImage, 744, 40, null);
+        g.drawImage(noteRouteKImage, 848, 40, null);
+        g.drawImage(noteRouteLImage, 952, 40, null);
+        g.drawImage(noteRouteLineImage, 224, 40, null);
+        g.drawImage(noteRouteLineImage, 328, 40, null);
+        g.drawImage(noteRouteLineImage, 432, 40, null);
+        g.drawImage(noteRouteLineImage, 536, 40, null);
+        g.drawImage(noteRouteLineImage, 740, 40, null);
+        g.drawImage(noteRouteLineImage, 844, 40, null);
+        g.drawImage(noteRouteLineImage, 948, 40, null);
+        g.drawImage(noteRouteLineImage, 1052, 40, null);
+        g.drawImage(gameInfoImage, 0, 660, null);
+        g.drawImage(judgementLineImage, 0, 580, null);
+        for (int i = 0; i < noteList.size(); i++) {
+            Note note = noteList.get(i);
+            if (note.getY() > 620) {
+                judgement = "Miss";
+                judgementTime = System.currentTimeMillis();
+            }
+            if (!note.isProceeded()) {
+                noteList.remove(note);
+                i--;
+            } else {
+                note.screenDraw(g);
+            }
+        }
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString(titleName, 20, 702);
+        g.drawString(difficulty, 1190, 702);
+        g.setFont(new Font("Arial", Font.BOLD, 26));
+        g.drawString("S", 270, 609);
+        g.drawString("D", 374, 609);
+        g.drawString("F", 478, 609);
+        g.drawString("Space Bar", 580, 609);
+        g.drawString("J", 784, 609);
+        g.drawString("K", 889, 609);
+        g.drawString("L", 993, 609);
+        g.setColor(Color.LIGHT_GRAY);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("000000", 590, 702);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - judgementTime <= 3000) { // 판정이 3초 이내에 발생한 경우에만 텍스트 표시
+            g.setFont(new Font("Arial", Font.BOLD, 30));
 
-        g.drawImage(screenImage, 0, 0, null);
+            // 판정에 따른 색상 설정
+            Color textColor = Color.WHITE;
+            if (judgement.equals("Miss")) {
+                textColor = Color.RED;
+            } else if (judgement.equals("Late")) {
+                textColor = Color.ORANGE;
+            } else if (judgement.equals("Good")) {
+                textColor = Color.YELLOW;
+            } else if (judgement.equals("Great")) {
+                textColor = Color.GREEN;
+            } else if (judgement.equals("Perfect")) {
+                textColor = Color.CYAN;
+            } else if (judgement.equals("Early")) {
+                textColor = Color.ORANGE;
+            }
+
+            // 텍스트의 너비와 높이 계산
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(judgement);
+            int textHeight = fm.getHeight();
+
+            // x 좌표는 중앙, y 좌표는 500으로 설정
+            int x = (1280 - textWidth) / 2;
+            int y = 500;
+
+            // 텍스트 배경 그리기 (텍스트 뒤에 사각형을 그려 배경 효과)
+            g.setColor(new Color(0, 0, 0, 150));  // 반투명 검정색 배경
+            g.fillRect(x - 10, y - textHeight + 5, textWidth + 20, textHeight);  // 텍스트 주변에 여백 추가
+
+            // 텍스트 그리기
+            g.setColor(textColor);  // 다시 텍스트 색상으로 변경
+            g.drawString(judgement, x, y);
+        }
+
     }
 
-    public void screenDraw(Graphics g) {
-        g.drawImage(introBackGround, 0, 0, null);
+    public void pressS() {
+        judge("S");
+        noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseS() {
+        noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressD() {
+        judge("D");
+        noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseD() {
+        noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressF() {
+        judge("F");
+        noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseF() {
+        noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressSpace() {
+        judge("Space");
+        noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("spacePress.mp3", false).start();
+    }
+
+    public void releaseSpace() {
+        noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressJ() {
+        judge("J");
+        noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseJ() {
+        noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressK() {
+        judge("K");
+        noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseK() {
+        noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    public void pressL() {
+        judge("L");
+        noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+        new Music("keyPress.mp3", false).start();
+    }
+
+    public void releaseL() {
+        noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+    }
+
+    @Override
+    public void run() {
+        dropNotes();
+    }
+
+    public void close() {
+        gameMusic.close();
+        this.interrupt();
+    }
+
+    public void dropNotes() {
+        Beat[] beats = null;
+        if (titleName.equals("Plum - R") && difficulty.equals("Easy")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[] {
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 1500, "D"),
+                    new Beat(startTime + 1800, "F"),
+                    new Beat(startTime + 2100, "Space"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        } else if (titleName.equals("Plum - R") && difficulty.equals("Hard")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[]{
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 1500, "D"),
+                    new Beat(startTime + 1800, "F"),
+                    new Beat(startTime + 2100, "Space"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        } else if (titleName.equals("Camellia - Parallel Universe Shifter") && difficulty.equals("Easy")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[]{
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 1500, "D"),
+                    new Beat(startTime + 1800, "F"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        } else if (titleName.equals("Camellia - Parallel Universe Shifter") && difficulty.equals("Hard")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[] {
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 1500, "D"),
+                    new Beat(startTime + 1800, "F"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        } else if (titleName.equals("Raimukun - Icyxis") && difficulty.equals("Easy")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[] {
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 2100, "Space"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        } else if (titleName.equals("Raimukun - Icyxis") && difficulty.equals("Hard")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[] {
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 2100, "Space"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L")
+            };
+        }
+        int i = 0;
+        gameMusic.start();
+        while (i < beats.length && !isInterrupted()) {
+            boolean dropped = false;
+            if (beats[i].getTime() <= gameMusic.getTime()) {
+                Note note = new Note(beats[i].getNoteName());
+                note.start();
+                noteList.add(note);
+                i++;
+                dropped = true;
+            }
+            if (!dropped) {
+                try {
+                    Thread.sleep(Main.SLEEP_TIME);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void judge(String input) {
+        for (int i = 0; i < noteList.size(); i++) {
+            Note note = noteList.get(i);
+            if (input.equals(note.getNoteType())) {
+                judgement(note.judge());
+                break;
+            }
+        }
+    }
+
+    public void judgement(String judge) {
+        judgement = judge;       // 판정을 저장
+        judgementTime = System.currentTimeMillis();  // 판정 발생 시간을 기록
     }
 }
