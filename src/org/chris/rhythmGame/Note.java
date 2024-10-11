@@ -6,7 +6,8 @@ import java.awt.*;
 public class Note extends Thread {
 
     private Image noteBasicImage = new ImageIcon(Main.class.getResource("/images/noteBasic.png")).getImage();
-    private int x, y = 500 - (1000 / Main.SLEEP_TIME * Main.NOTE_SPEED) * Main.REACH_TIME;
+    private int x, y = 580 - ((1000 / Main.SLEEP_TIME) * Main.NOTE_SPEED) * Main.REACH_TIME;
+    private long toPressTime;
     private String noteType;
     private boolean proceeded = true;
 
@@ -39,6 +40,7 @@ public class Note extends Thread {
             x = 952;
         }
         this.noteType = noteType;
+        this.toPressTime = System.currentTimeMillis() + Main.REACH_TIME * 1000;
     }
 
     public void screenDraw(Graphics2D g) {
@@ -51,7 +53,7 @@ public class Note extends Thread {
     }
 
     public void drop() {
-        y += Main.NOTE_SPEED;
+        y = (int) (580 - ((1000 / Main.SLEEP_TIME) * Main.NOTE_SPEED) * ((toPressTime - System.currentTimeMillis()))/1000);
         if (y > 620) {
             System.out.println("Miss");
             close();
@@ -76,7 +78,7 @@ public class Note extends Thread {
     }
 
     public String judge() {
-        if (y >= 613) {
+        /*if (y >= 613) {
             System.out.println("Late");
             close();
             return "Late";
@@ -105,7 +107,35 @@ public class Note extends Thread {
             close();
             return "Early";
         }
-        return null;
+        return null;*/
+        long currTime = System.currentTimeMillis();
+        long timingDifference = currTime - toPressTime;
+        System.out.println(timingDifference);
+        System.out.println(y);
+        if (-16 <= timingDifference && timingDifference <= 16) {
+            System.out.println("Perfect");
+            close();
+            return "Perfect";
+        } else if (-32 <= timingDifference && timingDifference <= 32) {
+            System.out.println("Great");
+            close();
+            return "Great";
+        } else if (-50 <= timingDifference && timingDifference <= 50) {
+            System.out.println("Good");
+            close();
+            return "Good";
+        } else if (-66 <= timingDifference && timingDifference <= 66) {
+            if (timingDifference > 0) {
+                System.out.println("Late");
+                close();
+                return "Late";
+            } else {
+                System.out.println("Early");
+                close();
+                return "Early";
+            }
+        }
+        return "";
     }
 
     public int getY() {

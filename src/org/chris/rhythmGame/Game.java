@@ -158,6 +158,7 @@ public class Game extends Thread {
         noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
         noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
         new Music("spacePress.mp3", false).start();
+        System.out.println(gameMusic.getTime());
     }
 
     public void releaseSpace() {
@@ -219,15 +220,113 @@ public class Game extends Thread {
                     new Beat(startTime + 3000, "L")
             };
         } else if (titleName.equals("Plum - R") && difficulty.equals("Hard")) {
-            int startTime = 1000 - Main.REACH_TIME * 1000;
+            int startTime = 1250 - Main.REACH_TIME * 1000;
             beats = new Beat[]{
-                    new Beat(startTime + 1200, "S"),
-                    new Beat(startTime + 1500, "D"),
-                    new Beat(startTime + 1800, "F"),
-                    new Beat(startTime + 2100, "Space"),
-                    new Beat(startTime + 2400, "J"),
-                    new Beat(startTime + 2700, "K"),
-                    new Beat(startTime + 3000, "L")
+                    // 다단 단 단 단/다단 단 단 단/다단 단 단 단/다다단 단 단 * 2
+                    new Beat(startTime, "S"),
+                    new Beat(startTime + 167, "D"),
+                    new Beat(startTime + 500, "L"),
+                    new Beat(startTime + 833, "K"),
+                    new Beat(startTime + 1166, "J"),
+
+                    new Beat(startTime + 1332, "D"),
+                    new Beat(startTime + 1499, "F"),
+                    new Beat(startTime + 1832, "L"),
+                    new Beat(startTime + 2165, "K"),
+                    new Beat(startTime + 2498, "J"),
+
+                    new Beat(startTime + 2664, "F"),
+                    new Beat(startTime + 2831, "Space"),
+                    new Beat(startTime + 3164, "L"),
+                    new Beat(startTime + 3497, "K"),
+                    new Beat(startTime + 3830, "J"),
+
+                    new Beat(startTime + 4163, "S"),
+                    new Beat(startTime + 4329, "D"),
+                    new Beat(startTime + 4496, "F"),
+                    new Beat(startTime + 4662, "Space"),
+                    new Beat(startTime + 4829, "J"),
+                    new Beat(startTime + 4995, "K"),
+                    new Beat(startTime + 5162, "L"),
+
+                    new Beat(startTime + 5328, "L"),
+                    new Beat(startTime + 5328 + 167, "K"),
+                    new Beat(startTime + 5328 + 500, "S"),
+                    new Beat(startTime + 5328 + 833, "D"),
+                    new Beat(startTime + 5328 + 1166, "F"),
+
+                    new Beat(startTime + 5328 + 1332, "K"),
+                    new Beat(startTime + 5328 + 1499, "J"),
+                    new Beat(startTime + 5328 + 1832, "S"),
+                    new Beat(startTime + 5328 + 2165, "D"),
+                    new Beat(startTime + 5328 + 2498, "F"),
+
+                    new Beat(startTime + 5328 + 2664, "J"),
+                    new Beat(startTime + 5328 + 2831, "Space"),
+                    new Beat(startTime + 5328 + 3164, "S"),
+                    new Beat(startTime + 5328 + 3497, "D"),
+                    new Beat(startTime + 5328 + 3830, "F"),
+
+                    new Beat(startTime + 5328 + 4163, "L"),
+                    new Beat(startTime + 5328 + 4329, "K"),
+                    new Beat(startTime + 5328 + 4496, "J"),
+                    new Beat(startTime + 5328 + 4662, "Space"),
+                    new Beat(startTime + 5328 + 4829, "F"),
+                    new Beat(startTime + 5328 + 4995, "D"),
+                    new Beat(startTime + 5328 + 5162, "S"),
+
+                    new Beat(startTime + 5328  + 5328 , "S"),
+                    new Beat(startTime + 5328  + 5328  + 167, "D"),
+                    new Beat(startTime + 5328  + 5328  + 500, "L"),
+                    new Beat(startTime + 5328  + 5328  + 833, "K"),
+                    new Beat(startTime + 5328  + 5328  + 1166, "J"),
+
+                    new Beat(startTime + 5328  + 5328  + 1332, "D"),
+                    new Beat(startTime + 5328  + 5328  + 1499, "F"),
+                    new Beat(startTime + 5328  + 5328  + 1832, "L"),
+                    new Beat(startTime + 5328  + 5328  + 2165, "K"),
+                    new Beat(startTime + 5328  + 5328  + 2498, "J"),
+
+                    new Beat(startTime + 5328  + 5328  + 2664, "F"),
+                    new Beat(startTime + 5328  + 5328  + 2831, "Space"),
+                    new Beat(startTime + 5328  + 5328  + 3164, "L"),
+                    new Beat(startTime + 5328  + 5328  + 3497, "K"),
+                    new Beat(startTime + 5328  + 5328  + 3830, "J"),
+
+                    new Beat(startTime + 5328  + 5328  + 4163, "S"),
+                    new Beat(startTime + 5328  + 5328  + 4329, "D"),
+                    new Beat(startTime + 5328  + 5328  + 4496, "F"),
+                    new Beat(startTime + 5328  + 5328  + 4662, "Space"),
+                    new Beat(startTime + 5328  + 5328  + 4829, "J"),
+                    new Beat(startTime + 5328  + 5328  + 4995, "K"),
+                    new Beat(startTime + 5328  + 5328  + 5162, "L"),
+
+
+                    new Beat(startTime + 5328  + 5328  + 5328 , "L"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 167, "K"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 500, "S"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 833, "D"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 1166, "F"),
+
+                    new Beat(startTime + 5328 + 5328  + 5328  + 1332, "K"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 1499, "J"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 1832, "S"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 2165, "D"),
+                    new Beat(startTime + 5328 + 5328  + 5328  + 2498, "F"),
+
+                    new Beat(startTime + 5328 + 2664, "J"),
+                    new Beat(startTime + 5328 + 2831, "Space"),
+                    new Beat(startTime + 5328 + 3164, "S"),
+                    new Beat(startTime + 5328 + 3497, "D"),
+                    new Beat(startTime + 5328 + 3830, "F"),
+
+                    new Beat(startTime + 5328 + 4163, "L"),
+                    new Beat(startTime + 5328 + 4329, "K"),
+                    new Beat(startTime + 5328 + 4496, "J"),
+                    new Beat(startTime + 5328 + 4662, "Space"),
+                    new Beat(startTime + 5328 + 4829, "F"),
+                    new Beat(startTime + 5328 + 4995, "D"),
+                    new Beat(startTime + 5328 + 5162, "S"),
             };
         } else if (titleName.equals("Camellia - Parallel Universe Shifter") && difficulty.equals("Easy")) {
             int startTime = 1000 - Main.REACH_TIME * 1000;
@@ -300,6 +399,9 @@ public class Game extends Thread {
     }
 
     public void judgement(String judge) {
+        if (judge.isEmpty()) {
+            return;
+        }
         judgement = judge;       // 판정을 저장
         judgementTime = System.currentTimeMillis();  // 판정 발생 시간을 기록
     }
