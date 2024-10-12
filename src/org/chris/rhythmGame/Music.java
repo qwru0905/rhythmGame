@@ -3,23 +3,22 @@ package org.chris.rhythmGame;
 import javazoom.jl.player.Player;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class Music extends Thread {
 
     private Player player;
     private boolean isLoop;
-    private File file;
-    private FileInputStream fis;
     private BufferedInputStream bis;
+    private InputStream is;
+    private String path;  // 음악 파일의 경로
 
     public Music(String name, boolean isLoop) {
         try {
             this.isLoop = isLoop;
-            file = new File(Main.class.getResource("/music/" + name).toURI());
-            fis = new FileInputStream(file);
-            bis = new BufferedInputStream(fis);
+            this.path = "/music/" + name;  // 기본 경로 설정
+            is = Main.class.getResourceAsStream(path);
+            bis = new BufferedInputStream(is);
             player = new Player(bis);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -32,36 +31,24 @@ public class Music extends Thread {
      * @param songAttitude 곡의 성격으로, 1은 레벨 노래, 2는 하이라이트 노래를 칭함.
      */
     public Music(String name, boolean isLoop, int songAttitude) {
-        if (songAttitude == 1) {
-            try {
-                this.isLoop = isLoop;
-                file = new File(Main.class.getResource("/music/levels/" + name).toURI());
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
-                player = new Player(bis);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+        try {
+            this.isLoop = isLoop;
+
+            // Song attitude에 따라 경로 설정
+            if (songAttitude == 1) {
+                this.path = "/music/levels/" + name;
+            } else if (songAttitude == 2) {
+                this.path = "/music/highlight/" + name;
+            } else {
+                this.path = "/music/" + name;  // 기본 경로
             }
-        } else if (songAttitude == 2) {
-            try {
-                this.isLoop = isLoop;
-                file = new File(Main.class.getResource("/music/highlight/" + name).toURI());
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
-                player = new Player(bis);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
-            try {
-                this.isLoop = isLoop;
-                file = new File(Main.class.getResource("/music/" + name).toURI());
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
-                player = new Player(bis);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+
+            // Use getResourceAsStream for all cases
+            is = Main.class.getResourceAsStream(path);
+            bis = new BufferedInputStream(is);
+            player = new Player(bis);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -74,7 +61,9 @@ public class Music extends Thread {
 
     public void close() {
         isLoop = false;
-        player.close();
+        if (player != null) {
+            player.close();
+        }
         this.interrupt();
     }
 
@@ -83,8 +72,9 @@ public class Music extends Thread {
         try {
             do {
                 player.play();
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
+                // 재생이 끝난 후 다시 InputStream을 열어야 합니다
+                is = Main.class.getResourceAsStream(path);  // 인스턴스 변수 path 사용
+                bis = new BufferedInputStream(is);
                 player = new Player(bis);
             } while (isLoop);
         } catch (Exception e) {
