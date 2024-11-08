@@ -64,6 +64,8 @@ public class RhythmGame extends JFrame {
                 null, "Camellia - Parallel Universe Shifter.mp3", "Camellia - Parallel Universe Shifter.mp3"));
         trackList.add(new Track("Raimukun - Icyxis", "icyxis Start Image.png",
                 null, "Raimukun - Icyxis.mp3", "Raimukun - Icyxis.mp3"));
+        trackList.add(new Track("TEST", null,
+                null, null, null));
 
         // 기본적으로 존재하는 메뉴 바 X
         setUndecorated(true);
@@ -352,9 +354,15 @@ public class RhythmGame extends JFrame {
         Dimension size = selectedSongName.getPreferredSize();
         selectedSongName.setBounds((getWidth() - size.width) / 2, 70, size.width, size.height);
 
-        selectedImage = new ImageIcon(Main.class.getResource("/images/levels/" + trackList.get(nowSelected).getStartImage())).getImage();
-        selectedMusic = new Music(trackList.get(nowSelected).getStartMusic(), true, 2);
-        selectedMusic.start();
+        if (trackList.get(nowSelected).getStartImage() != null) {
+            selectedImage = new ImageIcon(Main.class.getResource("/images/levels/" + trackList.get(nowSelected).getStartImage())).getImage();
+        } else {
+            selectedImage = new ImageIcon(Main.class.getResource("/images/levels/default Start Image.png")).getImage();
+        }
+        if (trackList.get(nowSelected).getStartMusic() != null) {
+            selectedMusic = new Music(trackList.get(nowSelected).getStartMusic(), true, 2);
+            selectedMusic.start();
+        }
     }
 
     public void selectLeft() {

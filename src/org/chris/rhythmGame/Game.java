@@ -1,5 +1,8 @@
 package org.chris.rhythmGame;
 
+import org.chris.rhythmGame.note.LongNote;
+import org.chris.rhythmGame.note.Note;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,6 +21,14 @@ public class Game extends Thread {
     private Image noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
     private Image noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
     private Image noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+
+    private boolean isPressS = false;
+    private boolean isPressD = false;
+    private boolean isPressF = false;
+    private boolean isPressSpace = false;
+    private boolean isPressJ = false;
+    private boolean isPressK = false;
+    private boolean isPressL = false;
 
     private String titleName;
     private String difficulty;
@@ -56,7 +67,7 @@ public class Game extends Thread {
         g.drawImage(judgementLineImage, 0, 580, null);
         for (int i = 0; i < noteList.size(); i++) {
             Note note = noteList.get(i);
-            if (note.getY() > 620) {
+            if (note.isMiss()) {
                 judgement = "Miss";
                 judgementTime = System.currentTimeMillis();
             }
@@ -124,76 +135,111 @@ public class Game extends Thread {
     }
 
     public void pressS() {
-        judge("S");
-        noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressS) {
+            judge("S");
+            noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressS = true;
+        }
     }
 
     public void releaseS() {
+        judge("release S");
         noteRouteSImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressS = false;
     }
 
     public void pressD() {
-        judge("D");
-        noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressD) {
+            judge("D");
+            noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressD = true;
+        }
     }
 
     public void releaseD() {
+        judge("release D");
         noteRouteDImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressD = false;
     }
 
     public void pressF() {
-        judge("F");
-        noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressF) {
+            judge("F");
+            noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressF = true;
+        }
     }
 
     public void releaseF() {
+        judge("release F");
         noteRouteFImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressF = false;
     }
 
     public void pressSpace() {
-        judge("Space");
-        noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("spacePress.mp3", false).start();
-        System.out.println(gameMusic.getTime());
+        if (!isPressSpace) {
+            judge("Space");
+            noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("spacePress.mp3", false).start();
+            System.out.println(gameMusic.getTime());
+            isPressSpace = true;
+        }
     }
 
     public void releaseSpace() {
+        judge("release Space");
         noteRouteSpace1Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
         noteRouteSpace2Image = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressSpace = false;
     }
 
     public void pressJ() {
-        judge("J");
-        noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressJ) {
+            judge("J");
+            noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressJ = true;
+        }
     }
 
     public void releaseJ() {
+        judge("Release J");
         noteRouteJImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressJ = false;
     }
 
     public void pressK() {
-        judge("K");
-        noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressK) {
+            judge("K");
+            noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressK = true;
+        }
     }
 
     public void releaseK() {
+        judge("Release K");
         noteRouteKImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressK = false;
     }
 
     public void pressL() {
-        judge("L");
-        noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
-        new Music("keyPress.mp3", false).start();
+        if (!isPressL) {
+            judge("L");
+            noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoutePressed.png")).getImage();
+            new Music("keyPress.mp3", false).start();
+            isPressL = true;
+        }
     }
 
     public void releaseL() {
+        judge("Release L");
         noteRouteLImage = new ImageIcon(Main.class.getResource("/images/noteRoute.png")).getImage();
+        isPressL = false;
     }
 
     @Override
@@ -366,13 +412,31 @@ public class Game extends Thread {
                     new Beat(startTime + 2700, "K"),
                     new Beat(startTime + 3000, "L")
             };
+        } else if (titleName.equals("TEST")) {
+            int startTime = 1000 - Main.REACH_TIME * 1000;
+            beats = new Beat[] {
+                    new Beat(startTime + 1200, "S"),
+                    new Beat(startTime + 2100, "Space"),
+                    new Beat(startTime + 2400, "J"),
+                    new Beat(startTime + 2700, "K"),
+                    new Beat(startTime + 3000, "L"),
+                    new Beat(startTime + 5000, "L", 1000),
+                    new Beat(startTime + 7000, "Space", 1000)
+            };
         }
         int i = 0;
         gameMusic.start();
+        long startTime = System.currentTimeMillis();
         while (i < beats.length && !isInterrupted()) {
             boolean dropped = false;
-            if (beats[i].getTime() <= gameMusic.getTime()) {
-                Note note = new Note(beats[i].getNoteName());
+            int time = gameMusic.isMusicExists()?gameMusic.getTime(): (int) (System.currentTimeMillis() - startTime);
+            if (beats[i].getTime() <= time) {
+                Note note;
+                if (beats[i].isLongNote()) {
+                    note = new LongNote(beats[i].getNoteName(), startTime + time, beats[i].getDuration());
+                } else {
+                    note = new Note(beats[i].getNoteName(), startTime + time);
+                }
                 note.start();
                 noteList.add(note);
                 i++;
@@ -391,6 +455,15 @@ public class Game extends Thread {
     public void judge(String input) {
         for (int i = 0; i < noteList.size(); i++) {
             Note note = noteList.get(i);
+            if (note instanceof LongNote longNote && input.contains("release ")) {
+                String realInput = input.substring(8);
+                System.out.println(realInput);
+                if (realInput.equals(longNote.getNoteType())) {
+                    judgement(longNote.judge());
+                    break;
+                }
+            }
+
             if (input.equals(note.getNoteType())) {
                 judgement(note.judge());
                 break;

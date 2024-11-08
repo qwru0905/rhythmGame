@@ -1,28 +1,37 @@
 package org.chris.rhythmGame;
 
 public class Beat {
-    private int time;
-    private String noteName;
+    private final int time;
+    private int duration;
+    private final boolean isLongNote;
+    private final String noteName;
 
     public Beat(int time, String noteName) {
-        super();
         this.time = time;
         this.noteName = noteName;
+        this.isLongNote = false;
+    }
+
+    public Beat(int time, String noteName, int duration) {
+        this.time = time;
+        this.noteName = noteName;
+        this.isLongNote = true;
+        this.duration = duration;
     }
 
     public int getTime() {
         return time;
     }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
-
     public String getNoteName() {
         return noteName;
     }
 
-    public void setNoteName(String noteName) {
-        this.noteName = noteName;
+    public int getDuration() {
+        return duration;
+    }
+
+    public boolean isLongNote() {
+        return isLongNote;
     }
 }

@@ -4,6 +4,9 @@ import javazoom.jl.player.Player;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Music extends Thread {
 
@@ -80,5 +83,9 @@ public class Music extends Thread {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public boolean isMusicExists() {
+        return Files.exists(Paths.get(path));
     }
 }
