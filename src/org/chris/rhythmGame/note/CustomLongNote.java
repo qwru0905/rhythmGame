@@ -4,13 +4,28 @@ import org.chris.rhythmGame.Main;
 
 import java.awt.*;
 
-public class LongNote extends Note {
+public class CustomLongNote extends CustomNote {
 
-    protected final long endPressTime;
-    protected boolean isHeld = false;
+    private final long endPressTime;
+    private boolean isHeld = false;
 
-    public LongNote(String noteType, long showTime, long duration) {
-        super(noteType, showTime);
+    public CustomLongNote(String noteType, long showTime, long duration, int speed) {
+        super(noteType, showTime, speed);
+        this.endPressTime = this.toPressTime + duration;
+    }
+
+    public CustomLongNote(String noteType, long showTime, long duration, int speed, boolean isCorrectlyDrop) {
+        super(noteType, showTime, speed, isCorrectlyDrop);
+        this.endPressTime = this.toPressTime + duration;
+    }
+
+    public CustomLongNote(String noteType, long showTime, long duration, int speed, long toPressTime) {
+        super(noteType, showTime, speed, toPressTime);
+        this.endPressTime = this.toPressTime + duration;
+    }
+
+    public CustomLongNote(String noteType, long showTime, long duration, int speed, boolean isCorrectlyDrop, long toPressTime) {
+        super(noteType, showTime, speed, isCorrectlyDrop, toPressTime);
         this.endPressTime = this.toPressTime + duration;
     }
 

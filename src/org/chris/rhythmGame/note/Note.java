@@ -7,11 +7,30 @@ import java.awt.*;
 
 public class Note extends Thread {
 
-    private Image noteBasicImage = new ImageIcon(Main.class.getResource("/images/noteBasic.png")).getImage();
-    private int x, y = 580 - ((1000 / Main.SLEEP_TIME) * Main.NOTE_SPEED) * Main.REACH_TIME;
-    private long toPressTime;
-    private String noteType;
-    private boolean proceeded = true;
+    protected Image noteBasicImage = new ImageIcon(Main.class.getResource("/images/noteBasic.png")).getImage();
+    protected int speed = Main.NOTE_SPEED;
+    protected int x, y = 580 - ((1000 / Main.SLEEP_TIME) * speed) * Main.REACH_TIME;
+    protected long toPressTime;
+    protected String noteType;
+    protected boolean proceeded = true;
+
+    public Note(String noteType, long showTime) {
+        this.noteType = noteType;
+        this.toPressTime = showTime + Main.REACH_TIME * 1000;
+        initializeXCoordinate();
+    }
+
+    protected void initializeXCoordinate() {
+        switch (noteType) {
+            case "S" -> x = 228;
+            case "D" -> x = 332;
+            case "F" -> x = 436;
+            case "Space" -> x = 540;
+            case "J" -> x = 744;
+            case "K" -> x = 848;
+            case "L" -> x = 952;
+        }
+    }
 
     public boolean isMiss() {
         return System.currentTimeMillis() - toPressTime > 66;
@@ -29,48 +48,23 @@ public class Note extends Thread {
         proceeded = false;
     }
 
-    public Note(String noteType, long showTime) {
-        switch (noteType) {
-            case "S" -> x = 228;
-            case "D" -> x = 332;
-            case "F" -> x = 436;
-            case "Space" -> x = 540;
-            case "J" -> x = 744;
-            case "K" -> x = 848;
-            case "L" -> x = 952;
-        }
-        this.noteType = noteType;
-        this.toPressTime = showTime + Main.REACH_TIME * 1000;
-    }
-
     public void screenDraw(Graphics2D g) {
-        if (!noteType.equals("Space")) {
-            g.drawImage(noteBasicImage, x, y, null);
-        } else {
-            g.drawImage(noteBasicImage, x, y, null);
+        g.drawImage(noteBasicImage, x, y, null);
+        if (noteType.equals("Space")) {
             g.drawImage(noteBasicImage, x + 100, y, null);
         }
     }
 
     public void drop() {
-        y = (int) (580 - ((1000 / Main.SLEEP_TIME) * Main.NOTE_SPEED) * ((toPressTime - System.currentTimeMillis()))/1000);
-        if (y > 620) {
-            System.out.println("Miss");
-            close();
-        }
+        y = (int) (580 - ((1000 / Main.SLEEP_TIME) * speed) * ((toPressTime - System.currentTimeMillis())) / 1000);
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (proceeded) {
                 drop();
-                if (proceeded) {
-                    Thread.sleep(Main.SLEEP_TIME);
-                } else {
-                    interrupt();
-                    break;
-                }
+                Thread.sleep(Main.SLEEP_TIME);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -78,67 +72,21 @@ public class Note extends Thread {
     }
 
     public String judge() {
-        /*if (y >= 613) {
-            System.out.println("Late");
-            close();
-            return "Late";
-        } else if (y >= 600) {
-            System.out.println("Good");
-            close();
-            return "Good";
-        } else if (y >= 587) {
-            System.out.println("Great");
-            close();
-            return "Great";
-        } else if (y >= 573) {
-            System.out.println("Perfect");
-            close();
-            return "Perfect";
-        } else if (y >= 565) {
-            System.out.println("Great");
-            close();
-            return "Great";
-        } else if (y >= 550) {
-            System.out.println("Good");
-            close();
-            return "Good";
-        } else if (y >= 535) {
-            System.out.println("Early");
-            close();
-            return "Early";
-        }
-        return null;*/
         long currTime = System.currentTimeMillis();
         long timingDifference = currTime - toPressTime;
-        System.out.println(timingDifference);
-        System.out.println(y);
         if (-16 <= timingDifference && timingDifference <= 16) {
-            System.out.println("Perfect");
             close();
             return "Perfect";
         } else if (-32 <= timingDifference && timingDifference <= 32) {
-            System.out.println("Great");
             close();
             return "Great";
         } else if (-50 <= timingDifference && timingDifference <= 50) {
-            System.out.println("Good");
             close();
             return "Good";
         } else if (-66 <= timingDifference && timingDifference <= 66) {
-            if (timingDifference > 0) {
-                System.out.println("Late");
-                close();
-                return "Late";
-            } else {
-                System.out.println("Early");
-                close();
-                return "Early";
-            }
+            close();
+            return timingDifference > 0 ? "Late" : "Early";
         }
         return "";
-    }
-
-    public int getY() {
-        return y;
     }
 }
